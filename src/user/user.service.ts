@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './user.dto';
 import * as fs from 'fs';
 import { ConfigService } from '../configuration/configuration.service';
@@ -21,7 +21,7 @@ export class UserService {
   ): { userProfileData: CreateUserDto } {
     const users: CreateUserDto[] = this.readJSONFile(filePath);
     if (users.find((user) => user.email === userProfileData.email)) {
-      throw new HttpException('User already exists', 400);
+      throw new HttpException('User already exists', HttpStatus.CONFLICT);
     }
     userProfileData.id = Math.floor(Math.random() * 100000);
     users.push(userProfileData);

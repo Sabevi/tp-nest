@@ -30,7 +30,6 @@ export class AppController {
   createUser(
     @Body('firstName') firstName: string,
     @Body('lastName') lastName: string,
-    @Body('secret') secret: string,
     @Body('email') email: string,
   ): { userProfileData: CreateUserDto } {
     if (!firstName || firstName.trim() === '') {
@@ -51,18 +50,11 @@ export class AppController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (!secret || secret.trim() === '') {
-      throw new HttpException(
-        'Secret is empty or contains only whitespace',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const filePath = this.configService.getFilePath('users.json');
     const userProfileDto = new CreateUserDto();
     userProfileDto.firstName = firstName;
     userProfileDto.lastName = lastName;
     userProfileDto.email = email;
-    userProfileDto.secret = secret;
     return this.userService.postUser(userProfileDto, filePath);
   }
 }

@@ -9,12 +9,14 @@ import {
 import { AppService } from './app.service';
 import { UserService } from './user/user.service';
 import { CreateUserDto } from './user/user.dto';
+import { ConfigService } from './configuration/configuration.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private userService: UserService,
+    private configService: ConfigService,
   ) {}
 
   @Get()
@@ -48,10 +50,11 @@ export class AppController {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const filePath = this.configService.getFilePath('users.json');
     const userProfileDto = new CreateUserDto();
     userProfileDto.firstName = firstName;
     userProfileDto.lastName = lastName;
     userProfileDto.secret = secret;
-    return this.userService.postUser(userProfileDto);
+    return this.userService.postUser(userProfileDto, filePath);
   }
 }
